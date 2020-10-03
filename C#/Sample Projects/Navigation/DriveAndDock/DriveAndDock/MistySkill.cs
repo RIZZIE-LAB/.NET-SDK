@@ -11,6 +11,28 @@
 *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *    See the License for the specific language governing permissions and
 *    limitations under the License.
+* 
+* 	 **WARRANTY DISCLAIMER.**
+* 
+* 	 * General. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, MISTY
+* 	 ROBOTICS PROVIDES THIS SAMPLE SOFTWARE "AS-IS" AND DISCLAIMS ALL
+* 	 WARRANTIES AND CONDITIONS, WHETHER EXPRESS, IMPLIED, OR STATUTORY,
+* 	 INCLUDING THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* 	 PURPOSE, TITLE, QUIET ENJOYMENT, ACCURACY, AND NON-INFRINGEMENT OF
+* 	 THIRD-PARTY RIGHTS. MISTY ROBOTICS DOES NOT GUARANTEE ANY SPECIFIC
+* 	 RESULTS FROM THE USE OF THIS SAMPLE SOFTWARE. MISTY ROBOTICS MAKES NO
+* 	 WARRANTY THAT THIS SAMPLE SOFTWARE WILL BE UNINTERRUPTED, FREE OF VIRUSES
+* 	 OR OTHER HARMFUL CODE, TIMELY, SECURE, OR ERROR-FREE.
+* 	 * Use at Your Own Risk. YOU USE THIS SAMPLE SOFTWARE AND THE PRODUCT AT
+* 	 YOUR OWN DISCRETION AND RISK. YOU WILL BE SOLELY RESPONSIBLE FOR (AND MISTY
+* 	 ROBOTICS DISCLAIMS) ANY AND ALL LOSS, LIABILITY, OR DAMAGES, INCLUDING TO
+* 	 ANY HOME, PERSONAL ITEMS, PRODUCT, OTHER PERIPHERALS CONNECTED TO THE PRODUCT,
+* 	 COMPUTER, AND MOBILE DEVICE, RESULTING FROM YOUR USE OF THIS SAMPLE SOFTWARE
+* 	 OR PRODUCT.
+* 
+* 	 Please refer to the Misty Robotics End User License Agreement for further
+* 	 information and full details:
+* 	 	https://www.mistyrobotics.com/legal/end-user-license-agreement/
 ******************************************************************************/
 
 //#define MAP_DOCK
@@ -36,9 +58,9 @@ namespace DriveAndDock
 		private const string PATH_FILE_NAME = "path1.txt";
 
 		// Adjustments for this particular robot to achieve a level head position.
-		private const double HEAD_PITCH_OFFSET = 0;
-		private const double HEAD_ROLL_OFFSET = -5;
-		private const double HEAD_YAW_OFFSET = -2;
+		private const double HEAD_PITCH_OFFSET = -3;
+		private const double HEAD_ROLL_OFFSET = 4;
+		private const double HEAD_YAW_OFFSET = 0;
 
 		// Name of the map around the charger and the map cell values that put Misty
 		// about 0.25 meters in front of the charger facing the charger.
@@ -50,7 +72,7 @@ namespace DriveAndDock
 		private IRobotMessenger _misty;
 		private SkillHelper _skillHelper;
 		private FollowPath _followPath;
-		private ChargerDock2 _docker;
+		private ChargerDock _docker;
 		private MapNav _mapNav;
 
 		public INativeRobotSkill Skill { get; private set; } = new NativeRobotSkill("DriveAndDock", "b4075ac6-a9a5-4519-a7c5-4ae6cceb8f79");
@@ -91,10 +113,12 @@ namespace DriveAndDock
 					_misty.PlayAudio("s_Awe.wav", 100, OnResponse);
 				}
 #else
-				_docker = new ChargerDock2(_misty, _skillHelper, HEAD_PITCH_OFFSET, HEAD_ROLL_OFFSET, HEAD_YAW_OFFSET);
+				_docker = new ChargerDock(_misty, _skillHelper, HEAD_PITCH_OFFSET, HEAD_ROLL_OFFSET, HEAD_YAW_OFFSET);
 				await _docker.DockAsync();
 #endif
 				await _skillHelper.EnableHazardSystemAsync();
+
+				await Task.Delay(30000);
 
 				Cleanup();
 			});
